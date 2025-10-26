@@ -1,7 +1,8 @@
-cmake_minimum_required(VERSION 3.21)
+cmake_minimum_required(VERSION 3.18)
 project(bibliotheque)
 
 file(GLOB SOURCES "*.cpp")
+
 add_executable(${PROJECT_NAME} ${SOURCES})
 
 # Specifie qu'on veut la version C++17 du langage
