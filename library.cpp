@@ -178,15 +178,16 @@ bool Library::returnBook(const string &isbn)
 void Library::displayAllBooks()
 {
     if (books.empty())
-        // Tri des livres par titre avant affichage
-        sort(books.begin(), books.end(), [](const unique_ptr<Book> &a, const unique_ptr<Book> &b)
-             { return a->getTitle() < b->getTitle(); });
     {
         cout << "Aucun livre dans la bibliothèque.\n";
         return;
     }
 
-    cout << "\n=== TOUS LES LIVRES ===\n";
+    // Tri des livres par titre avant affichage
+    sort(books.begin(), books.end(), [](const unique_ptr<Book> &a, const unique_ptr<Book> &b)
+         { return a->getTitle() < b->getTitle(); });
+
+    cout << "\n=== TOUS LES LIVRES (triés par titre) ===\n";
     for (size_t i = 0; i < books.size(); ++i)
     {
         cout << "\nLivre " << (i + 1) << " :\n";
@@ -201,16 +202,16 @@ void Library::displayAvailableBooks()
     auto available = getAvailableBooks();
 
     if (available.empty())
-        // Tri des livres par titre avant affichage
-        sort(books.begin(), books.end(), [](const unique_ptr<Book> &a, const unique_ptr<Book> &b)
-             { return a->getTitle() < b->getTitle(); });
-
     {
         cout << "Aucun livre disponible pour emprunt.\n";
         return;
     }
 
-    cout << "\n=== LIVRES DISPONIBLES ===\n";
+    // Tri des livres disponibles par auteur avant affichage
+    sort(available.begin(), available.end(), [](const Book *a, const Book *b)
+         { return a->getAuthor() < b->getAuthor(); });
+
+    cout << "\n=== LIVRES DISPONIBLES (triés par auteur) ===\n";
     for (size_t i = 0; i < available.size(); ++i)
     {
         cout << "\nLivre " << (i + 1) << " :\n";
@@ -218,6 +219,7 @@ void Library::displayAvailableBooks()
         cout << "---------------------------\n";
     }
 }
+
 
 // Display all users
 void Library::displayAllUsers()
