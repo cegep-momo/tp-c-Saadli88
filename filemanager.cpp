@@ -6,8 +6,11 @@
 using namespace std;
 
 // Constructor
+// Constructor
 FileManager::FileManager(const string& booksFile, const string& usersFile)
-    : booksFileName(booksFile), usersFileName(usersFile) {}
+    : booksFileName("../data/books.txt"), usersFileName("../data/users.txt") {}
+
+
 
 // Save all library data
 bool FileManager::saveLibraryData(Library& library) {

@@ -67,22 +67,25 @@ string Book::toFileFormat() const {
 }
 
 // fromFileFormat : sert à charger un livre depuis une ligne du fichier
-void Book::fromFileFormat(const string& line) {
+void Book::fromFileFormat(const string& line)
+{
     stringstream ss(line);
     string token;
     vector<string> parts;
 
-    // Découpe la ligne par caractère '|'
-    while (getline(ss, token, '|')) {
+    while (getline(ss, token, '|'))
+    {
         parts.push_back(token);
     }
 
-    // Si la ligne contient bien les 5 infos attendues
-    if (parts.size() >= 5) {
-        title = parts[0];
-        author = parts[1];
-        isbn = parts[2];
-        isAvailable = (parts[3] == "1");
-        borrowerName = parts[4];
-    }
+    // certaines lignes ont 4 champs seulement (manque le dernier vide)
+    while (parts.size() < 5)
+        parts.push_back("");
+
+    title = parts[0];
+    author = parts[1];
+    isbn = parts[2];
+    isAvailable = (parts[3] == "1");
+    borrowerName = parts[4];
 }
+

@@ -208,14 +208,21 @@ void Library::displayAvailableBooks()
     }
 
     // Tri des livres disponibles par auteur avant affichage
-    sort(available.begin(), available.end(), [](const Book *a, const Book *b)
-         { return a->getAuthor() < b->getAuthor(); });
+    sort(available.begin(), available.end(),
+         [](const Book *a, const Book *b)
+         {
+             return a->getAuthor() < b->getAuthor();
+         });
 
     cout << "\n=== LIVRES DISPONIBLES (triés par auteur) ===\n";
+
     for (size_t i = 0; i < available.size(); ++i)
     {
         cout << "\nLivre " << (i + 1) << " :\n";
-        cout << available[i]->toString() << "\n";
+        cout << "Titre  : " << available[i]->getTitle() << "\n";
+        cout << "Auteur : " << available[i]->getAuthor() << "\n";
+        cout << "ISBN   : " << available[i]->getISBN() << "\n";
+        cout << "Statut : Disponible\n";
         cout << "---------------------------\n";
     }
 }
