@@ -3,15 +3,14 @@
 #include <fstream>
 #include <ctime>
 
-
 #include "library.h"
 
 using namespace std;
 
-//Fonction pour enregistrer les activités dans un fichier texte(BONUS)
+// Fonction pour enregistrer les activités dans un fichier texte(BONUS)
 static void logActivity(const string &message)
 {
-    ofstream log("logs.txt", ios::app); //fin du fichier
+    ofstream log("logs.txt", ios::app); // fin du fichier
     if (!log.is_open())
         return;
 
@@ -23,22 +22,48 @@ static void logActivity(const string &message)
     log << "[" << buf << "] " << message << "\n";
 }
 
-
 // Constructor
 Library::Library() {}
 
 // Add book to library
 void Library::addBook(const Book &book)
 {
-    books.push_back(make_unique<Book>(book));
+    // On fait une copie du livre pour pouvoir modifier le titre et l'auteur
+    Book formattedBook = book;
 
-// Tri automatique par titre après chaque ajout
- sort(books.begin(), books.end(),
-         [](const unique_ptr<Book>& a, const unique_ptr<Book>& b)
+    string title = formattedBook.getTitle();
+    string author = formattedBook.getAuthor();
+
+    // Fonction utilitaire inline pour mettre en majuscule la première lettre
+    auto format = [](string &str)
+    {
+        if (!str.empty())
+        {
+            // tout en minuscule d'abord
+            transform(str.begin(), str.end(), str.begin(), ::tolower);
+            // première lettre en majuscule
+            str[0] = toupper(str[0]);
+        }
+    };
+
+    format(title);
+    format(author);
+
+    // setters :
+    formattedBook.setTitle(title);
+    formattedBook.setAuthor(author);
+
+    // Ajout du livre formaté
+    books.push_back(make_unique<Book>(formattedBook));
+
+    // Tri automatique par titre
+    sort(books.begin(), books.end(),
+         [](const unique_ptr<Book> &a, const unique_ptr<Book> &b)
          {
              return a->getTitle() < b->getTitle();
          });
-        }
+}
+
 
 // Remove book from library
 bool Library::removeBook(const string &isbn)
@@ -174,7 +199,7 @@ bool Library::checkOutBook(const string &isbn, const string &userId)
         book->checkOut(user->getName());
         user->borrowBook(isbn);
 
-     //loggue l'activité d'emprunt
+        // loggue l'activité d'emprunt
         logActivity("BORROW user=" + user->getName() + " isbn=" + isbn + " titre=" + book->getTitle());
         return true;
     }
@@ -193,9 +218,9 @@ bool Library::returnBook(const string &isbn)
         {
             if (user->hasBorrowedBook(isbn))
             {
-                //loggue l'activité de retour
-                logActivity("RETURN user=" + user->getName() + 
-                            " isbn=" + isbn + 
+                // loggue l'activité de retour
+                logActivity("RETURN user=" + user->getName() +
+                            " isbn=" + isbn +
                             " titre=" + book->getTitle());
 
                 user->returnBook(isbn);
@@ -208,7 +233,6 @@ bool Library::returnBook(const string &isbn)
     return false;
 }
 
-
 // Display all books
 void Library::displayAllBooks()
 {
@@ -218,9 +242,18 @@ void Library::displayAllBooks()
         return;
     }
 
-    // Tri des livres par titre avant affichage
+    //Tri des livres par titre (insensible à la casse)
     sort(books.begin(), books.end(), [](const unique_ptr<Book> &a, const unique_ptr<Book> &b)
-         { return a->getTitle() < b->getTitle(); });
+    {
+        string titleA = a->getTitle();
+        string titleB = b->getTitle();
+
+        //Met en minuscules pour une comparaison uniforme
+        transform(titleA.begin(), titleA.end(), titleA.begin(), ::tolower);
+        transform(titleB.begin(), titleB.end(), titleB.begin(), ::tolower);
+
+        return titleA < titleB;
+    });
 
     cout << "\n=== TOUS LES LIVRES (triés par titre) ===\n";
     for (size_t i = 0; i < books.size(); ++i)
@@ -230,6 +263,8 @@ void Library::displayAllBooks()
         cout << "-------------------------\n";
     }
 }
+
+
 
 // Display available books
 void Library::displayAvailableBooks()
@@ -261,7 +296,6 @@ void Library::displayAvailableBooks()
         cout << "---------------------------\n";
     }
 }
-
 
 // Display all users
 void Library::displayAllUsers()

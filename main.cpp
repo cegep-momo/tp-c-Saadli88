@@ -82,7 +82,12 @@ int main()
             string author = getInput("Entrez l'auteur du livre : ");
             string isbn = getInput("Entrez l'ISBN du livre : ");
 
-            if (library.findBookByISBN(isbn))
+            // Validation des entrées
+            if (title.empty() || author.empty() || isbn.empty())
+            {
+                cout << "Erreur : les champs titre, auteur et ISBN doivent être remplis.\n";
+            }
+            else if (library.findBookByISBN(isbn))
             {
                 cout << "Erreur : Un livre avec l'ISBN " << isbn << " existe déjà.\n";
             }
@@ -92,6 +97,7 @@ int main()
                 library.addBook(newBook);
                 cout << "Livre ajouté avec succès !\n";
             }
+
             pauseForInput();
             break;
         }
