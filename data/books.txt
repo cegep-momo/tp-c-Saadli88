@@ -1,3 +1,4 @@
+Amelie|Can|1234589|1|
 Andromaque|Jean Racine|9782070380817|0|Anne Moreau
 Atala|Chateaubriand|9782070360062|0|Lisa Girard
 Bel-Ami|Guy de Maupassant|9782253005070|0|Claire Bernard

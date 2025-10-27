@@ -31,7 +31,14 @@ Library::Library() {}
 void Library::addBook(const Book &book)
 {
     books.push_back(make_unique<Book>(book));
-}
+
+// Tri automatique par titre après chaque ajout
+ sort(books.begin(), books.end(),
+         [](const unique_ptr<Book>& a, const unique_ptr<Book>& b)
+         {
+             return a->getTitle() < b->getTitle();
+         });
+        }
 
 // Remove book from library
 bool Library::removeBook(const string &isbn)
