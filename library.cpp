@@ -1,9 +1,28 @@
 #include <iostream>
 #include <algorithm>
+#include <fstream>
+#include <ctime>
+
 
 #include "library.h"
 
 using namespace std;
+
+//Fonction pour enregistrer les activités dans un fichier texte(BONUS)
+static void logActivity(const string &message)
+{
+    ofstream log("logs.txt", ios::app); //fin du fichier
+    if (!log.is_open())
+        return;
+
+    // Ajout de la date et heure actuelle
+    time_t now = time(nullptr);
+    char buf[20];
+    strftime(buf, sizeof(buf), "%Y-%m-%d %H:%M:%S", localtime(&now));
+
+    log << "[" << buf << "] " << message << "\n";
+}
+
 
 // Constructor
 Library::Library() {}
@@ -147,6 +166,9 @@ bool Library::checkOutBook(const string &isbn, const string &userId)
     {
         book->checkOut(user->getName());
         user->borrowBook(isbn);
+
+     //loggue l'activité d'emprunt
+        logActivity("BORROW user=" + user->getName() + " isbn=" + isbn + " titre=" + book->getTitle());
         return true;
     }
     return false;
@@ -159,20 +181,26 @@ bool Library::returnBook(const string &isbn)
 
     if (book && !book->getAvailability())
     {
-        // Find the user who borrowed this book
+        // Find the user who borrowed the book
         for (auto &user : users)
         {
             if (user->hasBorrowedBook(isbn))
             {
+                //loggue l'activité de retour
+                logActivity("RETURN user=" + user->getName() + 
+                            " isbn=" + isbn + 
+                            " titre=" + book->getTitle());
+
                 user->returnBook(isbn);
-                break;
+                book->returnBook();
+                return true;
             }
         }
-        book->returnBook();
-        return true;
     }
+
     return false;
 }
+
 
 // Display all books
 void Library::displayAllBooks()
